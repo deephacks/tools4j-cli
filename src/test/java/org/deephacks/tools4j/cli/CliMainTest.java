@@ -38,6 +38,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("unused")
 public class CliMainTest {
     ByteArrayOutputStream out;
     PrintStream stdout = System.out;
@@ -224,7 +225,6 @@ public class CliMainTest {
     @Test
     public void test_input_constraint_violation() {
         final class ValidatedCommand {
-            @SuppressWarnings("unused")
             @CliOption(shortName = "o")
             @Max(10)
             @Min(5)

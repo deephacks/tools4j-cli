@@ -46,7 +46,7 @@ import org.deephacks.tools4j.cli.Command.XmlCommands;
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 @SupportedAnnotationTypes("org.deephacks.tools4j.cli.CliCmd")
-public class AnnotationProcessor extends AbstractProcessor {
+final class AnnotationProcessor extends AbstractProcessor {
     private Map<String, Command> commands = new HashMap<String, Command>();
 
     public AnnotationProcessor() {

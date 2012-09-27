@@ -49,7 +49,7 @@ import org.deephacks.tools4j.cli.Conversion.Converter.StringToObjectConverter;
  * Inspiration from http://www.springsource.org
  */
 @SuppressWarnings({ "unchecked", "rawtypes" })
-class Conversion {
+final class Conversion {
     /** Keeper for converters available. */
     private final HashMap<Class<?>, SourceTargetPair> converters = new HashMap<Class<?>, SourceTargetPair>();
     /** Lookup cache for finding converters. */
