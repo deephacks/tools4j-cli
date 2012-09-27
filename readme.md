@@ -1,6 +1,6 @@
-# Tools4j CLI: Command Line Interface
+# tools4j-cli
 
-Provide an easy way to create programs that interact with command line.
+Provides a small, simple, non-intrusive api for creating Java based command line interfaces.
 
 GNUish syntax is used for parsing arguments: http://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html.
 
