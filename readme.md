@@ -22,31 +22,10 @@ Most options require argument values, except Boolean options, which toggle to en
 
 Commands are invoked using the following syntax.
 
-    $ t4j_cli [COMMAND] [OPTIONS...] [ARGUMENTS...]
+    $ cmd [COMMAND] [OPTIONS...] [ARGUMENTS...]
 
 The following options are reserved.
 
-    -v --verbose
-    -d --debug
-    -h --help
-
-### Examples:
-
-Display all available commands.
-
-    $ t4j_cli
-
-Display the help menu for the 'server' command, showing a short description for all arguments and options.
-
-    $ t4j_cli start-server -h
-    $ t4j_cli start-server --help
-
-Invoke 'start-client' command with option --host to 'localhost' and short option -p (port) to '7000'
-
-    $ t4j_cli start-client --host localhost -p 7000
-
-Invoke 'stop-server' command with boolean short option -f (force) and arguments '0' to 'localhost' and '1' to '7000'
-
-    $ t4j_cli stop-server -f localhost 7000
-
-
+    --verbose
+    --debug
+    --help
