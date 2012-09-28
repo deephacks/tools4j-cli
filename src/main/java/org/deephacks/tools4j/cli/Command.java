@@ -221,14 +221,16 @@ final class Command {
      * to appropriate data type.
      */
     private List<Object> adjustArgs(List<String> args, Method m) {
+        String[] defaultValues = Utils.getDefaultArgValues(m);
         final int argnum = args.size() - m.getParameterTypes().length;
         if (argnum > 0) {
             // too many, remove tail
             args = args.subList(0, argnum);
         } else if (argnum < 0) {
             // too few, add null
+            int idx = defaultValues.length + argnum;
             for (int i = argnum; i < 0; i++) {
-                args.add(null);
+                args.add(defaultValues[idx++]);
             }
         }
         final List<Object> result = new ArrayList<Object>();

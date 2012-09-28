@@ -141,6 +141,50 @@ public class CliMainTest {
     }
 
     @Test
+    public void test_default_arg_values() {
+        final class DefaultArgCommand {
+            String arg1;
+            String arg2;
+
+            @CliCmd
+            public void exec(@Default("default1") String arg1, @Default("default2") String arg2) {
+                this.arg1 = arg1;
+                this.arg2 = arg2;
+            }
+        }
+        String[] args = new String[] { "exec", "arg1" };
+        CliMain cli = new CliMain(args);
+        DefaultArgCommand d = new DefaultArgCommand();
+        cli.run(d);
+        assertEquals("arg1", d.arg1);
+        assertEquals("default2", d.arg2);
+
+        args = new String[] { "exec" };
+        cli = new CliMain(args);
+        d = new DefaultArgCommand();
+        cli.run(d);
+        assertEquals("default1", d.arg1);
+        assertEquals("default2", d.arg2);
+
+        final class DefaultArgCommand2 {
+            String arg1;
+            String arg2;
+
+            @CliCmd
+            public void exec(String arg1, @Default("default2") String arg2) {
+                this.arg1 = arg1;
+                this.arg2 = arg2;
+            }
+        }
+        args = new String[] { "exec" };
+        cli = new CliMain(args);
+        DefaultArgCommand2 d2 = new DefaultArgCommand2();
+        cli.run(d2);
+        assertEquals(null, d2.arg1);
+        assertEquals("default2", d2.arg2);
+    }
+
+    @Test
     public void test_unexpected_exception() {
         final IllegalStateException e = new IllegalStateException("Unexpected Exception");
         final class UnexpectedExceptionCommand {

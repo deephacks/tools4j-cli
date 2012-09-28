@@ -4,7 +4,7 @@
   <groupId>org.deephacks.tools4j</groupId>
   <name>tools4j-cli</name>
   <description>tools4j-cli provide an api for creating java based command line interfaces.</description>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <packaging>jar</packaging>
   <url>http://tools4j.deephacks.org</url>
   <inceptionYear>2012</inceptionYear>

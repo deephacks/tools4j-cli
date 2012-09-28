@@ -13,6 +13,7 @@
  */
 package org.deephacks.tools4j.cli;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -145,6 +146,20 @@ final class Utils {
             return false;
         }
         return true;
+    }
+
+    static String[] getDefaultArgValues(Method m) {
+        String[] defaultValues = new String[m.getParameterTypes().length];
+        Annotation[][] a = m.getParameterAnnotations();
+        for (int i = 0; i < a.length; i++) {
+            for (int j = 0; j < a[i].length; j++) {
+                if (a[i][j].annotationType() == Default.class) {
+                    Default def = (Default) a[i][j];
+                    defaultValues[i] = def.value();
+                }
+            }
+        }
+        return defaultValues;
     }
 
     public static HashMap<String, String> parseParamsJavadoc(String javadoc) {
