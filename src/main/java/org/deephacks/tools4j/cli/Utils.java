@@ -82,15 +82,15 @@ final class Utils {
      * Validate that the method parameters if Bean Validation 1.1 is available 
      * on classpath.
      */
-    static void validateArgs(List<Object> args, Object instance, Method m) {
+    static void validateArgs(List<Object> args, Object instance, Method m, Command cmd) {
         if (!onClasspath(JSR303_1_1_CLASSNAME)) {
             return;
         }
         try {
             Object validator = getValidator();
             Method validate = validator.getClass().getMethod("validateArgs", List.class,
-                    Object.class, Method.class);
-            validate.invoke(validator, args, instance, m);
+                    Object.class, Method.class, Command.class);
+            validate.invoke(validator, args, instance, m, cmd);
         } catch (InvocationTargetException e) {
             if (e.getTargetException() instanceof RuntimeException) {
                 throw (RuntimeException) e.getCause();

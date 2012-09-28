@@ -22,6 +22,8 @@ import javax.validation.Path;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
 
+import org.deephacks.tools4j.cli.Command.Argument;
+
 /**
  * Validator perform JSR303 bean validation on options and method arguments.
  */
@@ -56,14 +58,21 @@ final class Validator {
      * 
      * Method validation was first introduced in version 1.1
      */
-    public void validateArgs(List<Object> args, Object instance, Method m) {
+    public void validateArgs(List<Object> args, Object instance, Method m, Command cmd) {
         final Set<ConstraintViolation<Object>> set = validator.validateParameters(instance, m,
                 args.toArray());
         final StringBuilder sb = new StringBuilder();
         for (ConstraintViolation<Object> violation : set) {
             final Path path = violation.getPropertyPath();
             final String msg = violation.getMessage();
-            sb.append(path.toString()).append(" ").append(msg).append(" ");
+            String var = path.toString();
+            try {
+                int pos = Integer.parseInt("" + var.charAt(var.length() - 1));
+                Argument arg = cmd.getArguments().get(pos);
+                sb.append(arg.getName()).append(" ").append(msg).append(" ");
+            } catch (Exception e) {
+                sb.append(var).append(" ").append(msg).append(" ");
+            }
         }
         if (sb.length() > 0) {
             // is ConstraintViolationException more appropriate,

@@ -168,7 +168,7 @@ final class Command {
             final List<Object> args = adjustArgs(p.getArgs(), m);
             injectOpts(p, clazz);
             try {
-                validateArgs(args, instance, m);
+                validateArgs(args, instance, m, this);
                 m.invoke(instance, args.toArray());
                 return;
             } catch (InvocationTargetException e) {
