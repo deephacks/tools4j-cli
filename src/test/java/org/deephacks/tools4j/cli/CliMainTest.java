@@ -34,14 +34,11 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 @SuppressWarnings("unused")
 public class CliMainTest {
-    ByteArrayOutputStream out;
-    PrintStream stdout = System.out;
+
     String stringValue = "string";
     String byteString = "1";
     Byte byteValue = new Byte(byteString);
@@ -66,18 +63,6 @@ public class CliMainTest {
     String dateString = "2010-10-10";
     File cliArg1 = new File(".");
     Integer cliArg2 = 1;
-
-    @Before
-    public void before() {
-        out = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(out, true);
-        System.setOut(ps);
-    }
-
-    @After
-    public void after() {
-        System.setOut(stdout);
-    }
 
     @Test
     public void test_success() {
@@ -126,6 +111,9 @@ public class CliMainTest {
 
     @Test
     public void test_command_help() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintStream stdout = redirectOut(out);
+
         // short opt
         String[] args = new String[] { "commandword" };
         args = fill(args, new String[] { "--help" });
@@ -133,16 +121,23 @@ public class CliMainTest {
         cli.run(new TestCommand());
         String helpscreen = new String(out.toByteArray());
         assertTrue(helpscreen.startsWith("usage"));
+        // reset out
+        System.setOut(stdout);
     }
 
     @Test
     public void test_list_commands_help() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintStream stdout = redirectOut(out);
+
         String[] args = new String[] { "" };
         CliMain cli = new CliMain(args);
         cli.run(new TestCommand());
         String helpscreen = new String(out.toByteArray());
         assertTrue(helpscreen.startsWith(Utils.AVAILABLE_CMDS_MSG));
         assertTrue(helpscreen.contains("commandword"));
+        // reset out
+        System.setOut(stdout);
     }
 
     @Test
@@ -342,4 +337,10 @@ public class CliMainTest {
         }
     }
 
+    public PrintStream redirectOut(ByteArrayOutputStream out) {
+        PrintStream stdout = System.out;
+        PrintStream ps = new PrintStream(out, true);
+        System.setOut(ps);
+        return stdout;
+    }
 }
