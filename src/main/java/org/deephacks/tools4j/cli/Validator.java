@@ -43,7 +43,7 @@ final class Validator {
         for (ConstraintViolation<Object> violation : set) {
             final Path path = violation.getPropertyPath();
             final String msg = violation.getMessage();
-            sb.append(path.toString()).append(" ").append(msg).append(" ");
+            sb.append(path.toString()).append(" ").append(msg).append(". ");
         }
         if (sb.length() > 0) {
             // is ConstraintViolationException more appropriate,
@@ -69,9 +69,9 @@ final class Validator {
             try {
                 int pos = Integer.parseInt("" + var.charAt(var.length() - 1));
                 Argument arg = cmd.getArguments().get(pos);
-                sb.append(arg.getName()).append(" ").append(msg).append(" ");
+                sb.append(arg.getName()).append(" ").append(msg).append(". ");
             } catch (Exception e) {
-                sb.append(var).append(" ").append(msg).append(" ");
+                sb.append(var).append(" ").append(msg).append(". ");
             }
         }
         if (sb.length() > 0) {
