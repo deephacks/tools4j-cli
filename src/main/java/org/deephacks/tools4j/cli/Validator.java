@@ -36,11 +36,11 @@ final class Validator {
      * and compliant implementation are available on classpath. 
      */
     public void validateOpts(Object instance) {
-        Set<ConstraintViolation<Object>> set = validator.validate(instance);
-        StringBuilder sb = new StringBuilder();
+        final Set<ConstraintViolation<Object>> set = validator.validate(instance);
+        final StringBuilder sb = new StringBuilder();
         for (ConstraintViolation<Object> violation : set) {
-            Path path = violation.getPropertyPath();
-            String msg = violation.getMessage();
+            final Path path = violation.getPropertyPath();
+            final String msg = violation.getMessage();
             sb.append(path.toString()).append(" ").append(msg).append(" ");
         }
         if (sb.length() > 0) {
@@ -57,12 +57,12 @@ final class Validator {
      * Method validation was first introduced in version 1.1
      */
     public void validateArgs(List<Object> args, Object instance, Method m) {
-        Set<ConstraintViolation<Object>> set = validator.validateParameters(instance, m,
+        final Set<ConstraintViolation<Object>> set = validator.validateParameters(instance, m,
                 args.toArray());
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         for (ConstraintViolation<Object> violation : set) {
-            Path path = violation.getPropertyPath();
-            String msg = violation.getMessage();
+            final Path path = violation.getPropertyPath();
+            final String msg = violation.getMessage();
             sb.append(path.toString()).append(" ").append(msg).append(" ");
         }
         if (sb.length() > 0) {

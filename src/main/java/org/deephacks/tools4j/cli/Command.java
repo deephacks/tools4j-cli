@@ -13,6 +13,9 @@
  */
 package org.deephacks.tools4j.cli;
 
+import static org.deephacks.tools4j.cli.Utils.validateArgs;
+import static org.deephacks.tools4j.cli.Utils.validateOpts;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -37,7 +40,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.deephacks.tools4j.cli.Conversion.ConversionException;
 
 /**
- * Command is responsible for ..
+ * Internal representation of commands.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 final class Command {
@@ -66,16 +69,16 @@ final class Command {
     }
 
     public static List<Command> create(Object command) {
-        List<Command> commands = new ArrayList<Command>();
-        Class<?> cmdClazz = command.getClass();
+        final List<Command> commands = new ArrayList<Command>();
+        final Class<?> cmdClazz = command.getClass();
         for (Method m : cmdClazz.getDeclaredMethods()) {
             m.setAccessible(true);
-            CliCmd anno = m.getAnnotation(CliCmd.class);
+            final CliCmd anno = m.getAnnotation(CliCmd.class);
             if (anno == null) {
                 continue;
             }
-            String cmdname = m.getName();
-            Command cmd = new Command(cmdname, cmdClazz.getName(), "n/a");
+            final String cmdname = m.getName();
+            final Command cmd = new Command(cmdname, cmdClazz.getName(), "n/a");
             int i = 0;
             for (Class<?> cls : m.getParameterTypes()) {
                 cmd.addArgument(new Argument("n/a", cls.getName(), i++, "n/a"));
@@ -154,22 +157,22 @@ final class Command {
         if (instance == null) {
             instance = Utils.newInstance(className);
         }
-        Class<?> clazz = instance.getClass();
-        Method[] methods = clazz.getDeclaredMethods();
+        final Class<?> clazz = instance.getClass();
+        final Method[] methods = clazz.getDeclaredMethods();
         for (Method m : methods) {
-            CliCmd a = m.getAnnotation(CliCmd.class);
+            final CliCmd a = m.getAnnotation(CliCmd.class);
             m.setAccessible(true);
             if (a == null || !m.getName().equals(p.getCommand())) {
                 continue;
             }
-            List<Object> args = adjustArgs(p.getArgs(), m);
+            final List<Object> args = adjustArgs(p.getArgs(), m);
             injectOpts(p, clazz);
             try {
-                Utils.validateArgs(args, instance, m);
+                validateArgs(args, instance, m);
                 m.invoke(instance, args.toArray());
                 return;
             } catch (InvocationTargetException e) {
-                Throwable ex = e.getTargetException();
+                final Throwable ex = e.getTargetException();
                 if (ex instanceof RuntimeException) {
                     throw (RuntimeException) e.getCause();
                 } else {
@@ -191,7 +194,7 @@ final class Command {
     private void injectOpts(GNUishParser p, Class<?> clazz) {
         for (Field f : clazz.getDeclaredFields()) {
             f.setAccessible(true);
-            CliOption anno = f.getAnnotation(CliOption.class);
+            final CliOption anno = f.getAnnotation(CliOption.class);
             if (anno == null) {
                 continue;
             }
@@ -210,7 +213,7 @@ final class Command {
                 throw new RuntimeException(e);
             }
         }
-        Utils.validateOpts(instance);
+        validateOpts(instance);
     }
 
     /**
@@ -218,7 +221,7 @@ final class Command {
      * to appropriate data type.
      */
     private List<Object> adjustArgs(List<String> args, Method m) {
-        int argnum = args.size() - m.getParameterTypes().length;
+        final int argnum = args.size() - m.getParameterTypes().length;
         if (argnum > 0) {
             // too many, remove tail
             args = args.subList(0, argnum);
@@ -228,8 +231,8 @@ final class Command {
                 args.add(null);
             }
         }
-        List<Object> result = new ArrayList<Object>();
-        Class<?>[] types = m.getParameterTypes();
+        final List<Object> result = new ArrayList<Object>();
+        final Class<?>[] types = m.getParameterTypes();
         for (int i = 0; i < types.length; i++) {
             try {
                 result.add(c.convert(args.get(i), types[i]));

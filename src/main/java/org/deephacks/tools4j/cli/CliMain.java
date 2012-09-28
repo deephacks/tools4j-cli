@@ -55,7 +55,7 @@ public final class CliMain {
      * @param command Instance of a class that defines at least one command.
      */
     public void run(Object command) {
-        List<Command> cmds = Command.create(command);
+        final List<Command> cmds = Command.create(command);
         for (Command cmd : cmds) {
             cmd.setInstance(command);
             commands.put(cmd.getCommand(), cmd);
@@ -81,7 +81,7 @@ public final class CliMain {
             return;
         }
 
-        Command cmd = commands.get(p.getCommand());
+        final Command cmd = commands.get(p.getCommand());
         if (cmd == null) {
             throw CliException.COMMAND_NOT_FOUND(p.getCommand());
         }
@@ -106,7 +106,7 @@ public final class CliMain {
      */
     private void readCommands() {
         try {
-            Enumeration<URL> urls = Thread.currentThread().getContextClassLoader()
+            final Enumeration<URL> urls = Thread.currentThread().getContextClassLoader()
                     .getResources(XmlCommands.FILEPATH);
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
