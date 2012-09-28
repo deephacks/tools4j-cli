@@ -118,7 +118,8 @@ final class GNUishParser {
 
         String arg = argsIt.next();
         // the token following the option is a new option (not an argument)
-        if (arg.startsWith("-")) {
+        // digits following the hyphen are treated as arguments
+        if (arg.startsWith("-") && arg.length() > 1 && !Character.isDigit(arg.charAt(1))) {
             // arg was the next opt, take one step back 
             argsIt.previous();
             // assume argument for opt is a boolean 
