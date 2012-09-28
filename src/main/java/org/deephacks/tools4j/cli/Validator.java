@@ -28,8 +28,8 @@ import org.deephacks.tools4j.cli.Command.Argument;
  * Validator perform JSR303 bean validation on options and method arguments.
  */
 final class Validator {
-    static final String ARG_VIOLATION_MSG = "Argument validation failed";
-    static final String OPT_VIOLATION_MSG = "Options validation failed";
+    static final String ARG_VIOLATION_MSG = "Argument violation";
+    static final String OPT_VIOLATION_MSG = "Option violation";
     private static final javax.validation.Validator validator = Validation
             .buildDefaultValidatorFactory().getValidator();
 
@@ -48,7 +48,7 @@ final class Validator {
         if (sb.length() > 0) {
             // is ConstraintViolationException more appropriate,
             // letting user choose their error message?
-            throw new ValidationException(OPT_VIOLATION_MSG + ", " + sb.toString());
+            throw new ValidationException(OPT_VIOLATION_MSG + ": " + sb.toString());
         }
     }
 
@@ -77,7 +77,7 @@ final class Validator {
         if (sb.length() > 0) {
             // is ConstraintViolationException more appropriate,
             // letting user choose their error message?
-            throw new ValidationException(ARG_VIOLATION_MSG + ", " + sb.toString());
+            throw new ValidationException(ARG_VIOLATION_MSG + ": " + sb.toString());
         }
     }
 }
