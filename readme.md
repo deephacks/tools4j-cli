@@ -1,4 +1,4 @@
-# tools4j-cli
+![tools4j-cli](https://raw.github.com/deephacks/tools4j-cli/master/tools4j-cli.png)
 
 Provides a small, simple, non-intrusive api for creating Java based command line interfaces.
 
