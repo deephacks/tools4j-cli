@@ -1,5 +1,7 @@
 ![tools4j-cli](https://raw.github.com/deephacks/tools4j-cli/master/tools4j-cli.png)
 
+[![Build Status](https://travis-ci.org/deephacks/tools4j-cli.svg?branch=master)](https://travis-ci.org/deephacks/tools4j-cli)
+
 Provides a small, simple, non-intrusive api for creating Java based command line interfaces.
 
 GNUish syntax is used for parsing arguments: http://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html.
