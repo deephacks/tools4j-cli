@@ -86,7 +86,7 @@ final class Command {
     final Class<?> cmdClazz = command.getClass();
     for (Method m : cmdClazz.getDeclaredMethods()) {
       m.setAccessible(true);
-      final CliCmd anno = m.getDeclaredAnnotation(CliCmd.class);
+      final CliCmd anno = m.getAnnotation(CliCmd.class);
       if (anno == null) {
         continue;
       }
