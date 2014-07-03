@@ -234,27 +234,31 @@ final class Command {
    * to appropriate data type.
    */
   private List<Object> adjustArgs(List<String> args, Method m) {
-    String[] defaultValues = Utils.getDefaultArgValues(m);
-    final int argnum = args.size() - m.getParameterTypes().length;
-    if (argnum > 0) {
-      // too many, remove tail
-      args = args.subList(0, argnum);
-    } else if (argnum < 0) {
-      // too few, add null
-      int idx = defaultValues.length + argnum;
-      for (int i = argnum; i < 0; i++) {
-        args.add(defaultValues[idx++]);
-      }
-    }
     final List<Object> result = new ArrayList<Object>();
     final Class<?>[] types = m.getParameterTypes();
-    for (int i = 0; i < types.length; i++) {
+    if (m.isVarArgs()) {
+      types[types.length - 1] = types[types.length - 1].getComponentType();
+      if (!String.class.isAssignableFrom(types[types.length - 1])) {
+        throw new CliException("Only String varargs is supported.");
+      }
+      types[types.length - 1] = String.class;
+    }
+
+    List<Object> varargs = new ArrayList<>();
+    for (int i = 0; i < args.size(); i++) {
       try {
-        result.add(c.convert(args.get(i), types[i]));
+        if (m.isVarArgs() && i >= types.length - 1) {
+          varargs.add(c.convert(args.get(i), types[types.length - 1]));
+        } else {
+          result.add(c.convert(args.get(i), types[i]));
+        }
       } catch (ConversionException e) {
         throw CliException.WRONG_ARG_TYPE(getArguments().get(i).getName(),
                 types[i].getName(), args.get(i));
       }
+    }
+    if (m.isVarArgs()) {
+      result.add(varargs.toArray(new String[0]));
     }
     return result;
   }

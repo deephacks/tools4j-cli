@@ -13,7 +13,9 @@
  */
 package org.deephacks.tools4j.cli;
 
-import java.lang.annotation.Annotation;
+import org.deephacks.tools4j.cli.Command.Argument;
+import org.deephacks.tools4j.cli.Command.Option;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,11 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.deephacks.tools4j.cli.Command.Argument;
-import org.deephacks.tools4j.cli.Command.Option;
-
 /**
- * Utility code are kept here to avoid distorting readability of other 
+ * Utility code are kept here to avoid distorting readability of other
  * classes with code that is irrelevant to their domain.
  */
 final class Utils {
@@ -79,7 +78,7 @@ final class Utils {
     }
 
     /**
-     * Validate that the method parameters if Bean Validation 1.1 is available 
+     * Validate that the method parameters if Bean Validation 1.1 is available
      * on classpath.
      */
     static void validateArgs(List<Object> args, Object instance, Method m, Command cmd) {
@@ -135,7 +134,7 @@ final class Utils {
     }
 
     /**
-     * Checks to see if JSR303 implementation is 
+     * Checks to see if JSR303 implementation is
      * available on classpath.
      */
     static boolean onClasspath(String className) {
@@ -146,20 +145,6 @@ final class Utils {
             return false;
         }
         return true;
-    }
-
-    static String[] getDefaultArgValues(Method m) {
-        String[] defaultValues = new String[m.getParameterTypes().length];
-        Annotation[][] a = m.getParameterAnnotations();
-        for (int i = 0; i < a.length; i++) {
-            for (int j = 0; j < a[i].length; j++) {
-                if (a[i][j].annotationType() == Default.class) {
-                    Default def = (Default) a[i][j];
-                    defaultValues[i] = def.value();
-                }
-            }
-        }
-        return defaultValues;
     }
 
     public static HashMap<String, String> parseParamsJavadoc(String javadoc) {

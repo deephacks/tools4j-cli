@@ -13,12 +13,12 @@
 */
 package org.deephacks.tools4j.cli;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.junit.Test;
 
+import javax.validation.ValidationException;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
@@ -29,12 +29,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.validation.ValidationException;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unused")
 public class CliMainTest {
@@ -85,7 +81,7 @@ public class CliMainTest {
         args = fill(args, new String[] { "-m", fileString });
         // turn on debug
         args = fill(args, new String[] { "--debug" });
-        // args
+        // varargs
         args = fill(args, new String[] { "." });
         args = fill(args, new String[] { "1" });
 
@@ -138,50 +134,6 @@ public class CliMainTest {
         assertTrue(helpscreen.contains("commandword"));
         // reset out
         System.setOut(stdout);
-    }
-
-    @Test
-    public void test_default_arg_values() {
-        final class DefaultArgCommand {
-            String arg1;
-            String arg2;
-
-            @CliCmd
-            public void exec(@Default("default1") String arg1, @Default("default2") String arg2) {
-                this.arg1 = arg1;
-                this.arg2 = arg2;
-            }
-        }
-        String[] args = new String[] { "exec", "arg1" };
-        CliMain cli = new CliMain(args);
-        DefaultArgCommand d = new DefaultArgCommand();
-        cli.run(d);
-        assertEquals("arg1", d.arg1);
-        assertEquals("default2", d.arg2);
-
-        args = new String[] { "exec" };
-        cli = new CliMain(args);
-        d = new DefaultArgCommand();
-        cli.run(d);
-        assertEquals("default1", d.arg1);
-        assertEquals("default2", d.arg2);
-
-        final class DefaultArgCommand2 {
-            String arg1;
-            String arg2;
-
-            @CliCmd
-            public void exec(String arg1, @Default("default2") String arg2) {
-                this.arg1 = arg1;
-                this.arg2 = arg2;
-            }
-        }
-        args = new String[] { "exec" };
-        cli = new CliMain(args);
-        DefaultArgCommand2 d2 = new DefaultArgCommand2();
-        cli.run(d2);
-        assertEquals(null, d2.arg1);
-        assertEquals("default2", d2.arg2);
     }
 
     @Test
@@ -250,14 +202,12 @@ public class CliMainTest {
 
             }
         }
-        ;
         CliMain cli = new CliMain(args);
         try {
             cli.run(new MissingArgCommand());
             fail("exception expected");
-        } catch (ValidationException e) {
-            assertTrue("Wrong message: " + e.getMessage(),
-                    e.getMessage().contains(Validator.ARG_VIOLATION_MSG));
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("wrong number of arguments"));
         }
     }
 
@@ -332,6 +282,17 @@ public class CliMainTest {
 
     }
 
+  @Test
+  public void test_xargs_command() {
+    String[] args = new String[] { "xargscommand", "one", "1", "2", "3"};
+    CliMain cli = new CliMain(args);
+
+    cli.run(new XargsCommand());
+    assertThat(XargsCommand.varargs[0], is("1"));
+    assertThat(XargsCommand.varargs[1], is("2"));
+    assertThat(XargsCommand.varargs[2], is("3"));
+  }
+
     private static URL newURL(String urlString) {
         try {
             return new URL(urlString);
@@ -346,6 +307,16 @@ public class CliMainTest {
         Collections.addAll(both, second);
         return both.toArray(new String[] {});
     }
+
+    public static class XargsCommand {
+
+      public static String[] varargs;
+
+      @CliCmd
+      public void xargscommand(String one, String... args) {
+        XargsCommand.varargs = args;
+      }
+  }
 
     public class TestCommand {
         @CliOption(shortName = "a")
